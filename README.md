@@ -1,62 +1,126 @@
-# Express.js RESTful API Assignment
 
-This assignment focuses on building a RESTful API using Express.js, implementing proper routing, middleware, and error handling.
 
-## Assignment Overview
+# RESTful API with Express.js 
 
-You will:
-1. Set up an Express.js server
-2. Create RESTful API routes for a product resource
-3. Implement custom middleware for logging, authentication, and validation
-4. Add comprehensive error handling
-5. Develop advanced features like filtering, pagination, and search
+## Project Overview
+This is a fully functional RESTful API built with Express.js for managing a collection of products. It supports standard CRUD operations, middleware for logging, authentication, and validation, as well as advanced features like filtering, pagination, searching, and statistics. The API uses MongoDB as the database for persistent storage.
 
-## Getting Started
+- **Key Features**:
+  - CRUD operations for products (Create, Read, Update, Delete).
+  - Custom middleware for request logging, JSON parsing, authentication (via API key), and input validation.
+  - Error handling with custom error classes and appropriate HTTP status codes.
+  - Advanced querying: Filter by category, paginate results, search by product name, and get product statistics.
+  - Initial sample data is seeded into the database on startup if it's empty.
 
-1. Accept the GitHub Classroom assignment invitation
-2. Clone your personal repository that was created by GitHub Classroom
-3. Install dependencies:
-   ```
-   npm install
-   ```
-4. Run the server:
-   ```
-   npm start
-   ```
+This project is ideal for learning Express.js, RESTful API design, and basic database integration.
 
-## Files Included
+## Installation
+To set up and run this project, follow these steps:
 
-- `Week2-Assignment.md`: Detailed assignment instructions
-- `server.js`: Starter Express.js server file
-- `.env.example`: Example environment variables file
+- **Prerequisites**:
+  - Node.js (v14 or higher) installed on your machine.
+  - MongoDB server running locally (or a remote instance).
 
-## Requirements
+- **Steps**:
+  1. Clone the repository or create a new project directory.
+  2. Navigate to the project directory in your terminal.
+  3. Run `npm init -y` to create a `package.json` file.
+  4. Install the required dependencies by running:
+     ```
+     npm install express body-parser uuid mongoose
+     ```
+  5. Copy the provided `server.js` file into your project directory.
 
-- Node.js (v18 or higher)
-- npm or yarn
-- Postman, Insomnia, or curl for API testing
+## Running the Server
+Once installed, start the server as follows:
 
-## API Endpoints
+- **Command**:
+  ```
+  node server.js
+  ```
+- **Expected Output**: The server will connect to the database and start listening on port 3000 (or the port specified in the `PORT` environment variable).
+- **Access the API**: Open your browser or a tool like Postman and visit `http://localhost:3000`. You should see a welcome message.
 
-The API will have the following endpoints:
+- **Environment Variables**:
+  - Set `PORT` if you want to use a different port (e.g., in a `.env` file).
+  
+## API Documentation
+The API endpoints are protected by an authentication middleware that requires an `api-key` header 
 
-- `GET /api/products`: Get all products
-- `GET /api/products/:id`: Get a specific product
-- `POST /api/products`: Create a new product
-- `PUT /api/products/:id`: Update a product
-- `DELETE /api/products/:id`: Delete a product
+### Endpoints
+Here are the available routes:
 
-## Submission
+- **GET /**  
+  - Description: Returns a welcome message.  
+  - Response: HTML string (e.g., "Welcome to the Product API!").  
+  - Example: `GET http://localhost:3000`
 
-Your work will be automatically submitted when you push to your GitHub Classroom repository. Make sure to:
+- **GET /api/products**  
+  - Description: Lists all products with optional filtering and pagination.  
+  - Query Parameters:
+    - `category`: Filter by category (e.g., `?category=electronics`).
+    - `page`: Page number for pagination (default: 1).
+    - `limit`: Number of items per page (default: 10).
+  - Response: JSON array of products with pagination metadata.  
+  - Example: `GET http://localhost:3000/api/products?category=electronics&page=1&limit=5`
 
-1. Complete all the required API endpoints
-2. Implement the middleware and error handling
-3. Document your API in the README.md
-4. Include examples of requests and responses
+- **GET /api/products/:id**  
+  - Description: Retrieves a specific product by ID.  
+  - Response: JSON object of the product.  
+  - Example: `GET http://localhost:3000/api/products/1`
 
-## Resources
+- **POST /api/products**  
+  - Description: Creates a new product.  
+  - Request Body: JSON with fields: `name` (string), `description` (string), `price` (number), `category` (string), `inStock` (boolean).  
+  - Response: 201 Created with the new product object.  
+  - Example: `POST http://localhost:3000/api/products` with body: `{ "name": "New Product", "description": "Description", "price": 100, "category": "electronics", "inStock": true }`
 
-- [Express.js Documentation](https://expressjs.com/)
-- [RESTful API Design Best Practices](https://restfulapi.net/)
-- [HTTP Status Codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) 
+- **PUT /api/products/:id**  
+  - Description: Updates an existing product (partial updates allowed).  
+  - Request Body: JSON with fields to update (e.g., `{ "price": 150 }`).  
+  - Response: Updated product object.  
+  - Example: `PUT http://localhost:3000/api/products/1` with body: `{ "price": 150 }`
+
+- **DELETE /api/products/:id**  
+  - Description: Deletes a product by ID.  
+  - Response: JSON message (e.g., { "message": "Product deleted successfully" }).  
+  - Example: `DELETE http://localhost:3000/api/products/1`
+
+- **GET /api/products/search?q=<query>**  
+  - Description: Searches products by name (case-insensitive).  
+  - Query Parameters: `q` (search query string).  
+  - Response: JSON array of matching products.  
+  - Example: `GET http://localhost:3000/api/products/search?q=laptop`
+
+- **GET /api/products/stats**  
+  - Description: Gets statistics, such as the count of products by category.  
+  - Response: JSON object (e.g., { "electronics": 2, "kitchen": 1 }).  
+  - Example: `GET http://localhost:3000/api/products/stats`
+
+## Middleware and Error Handling
+- **Middleware**:
+  - Logging: Automatically logs each request with method, URL, and timestamp.
+  - Authentication: Checks for a valid API key in the request headers.
+  - Validation: Ensures incoming data for product creation and updates meets required formats.
+  - JSON Parsing: Handles JSON request bodies.
+
+- **Error Handling**:
+  - Custom errors (e.g., NotFoundError for 404, ValidationError for 400).
+  - Global error handler returns appropriate HTTP status codes and JSON error messages.
+  - All routes handle asynchronous errors gracefully.
+
+## Dependencies
+The project relies on the following npm packages:
+- `express`: For building the web server.
+- `body-parser`: For parsing JSON request bodies.
+- `uuid`: For generating unique IDs.
+- `mongoose`: For MongoDB object modeling.
+
+You can view and manage these in your `package.json` file.
+
+## How to test in Postman (use one of these headers):
+
+Header: Authorization: Bearer 12345687890edrfg
+OR Header: x-api-key: 12345687890edrfg (Replace value with your API_KEY from the .env)
+If you want, paste index.js (if present) or server.js and I’ll propose minimal edits.
+
