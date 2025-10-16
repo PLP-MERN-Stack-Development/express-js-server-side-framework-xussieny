@@ -15,6 +15,7 @@ const productsRouter = require('./routes/products');
 // Initialize Express app
 const app = express();
 const PORT = process.env.PORT || 3000; 
+//connect to database
 connectDB();
 
 
