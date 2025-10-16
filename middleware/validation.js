@@ -1,5 +1,6 @@
 // middleware/validation.js
 const mongoose = require('mongoose');
+const { v4: uuid } = require('uuid');
 const { ValidationError } = require('../errors');
 
 // Define the validation schema for product properties
@@ -9,7 +10,7 @@ const productSchema = new mongoose.Schema({
   description: { type: 'string', required: false }, // Description is optional
   price: { type: 'number', required: true, min: 0 },
   category: { type: 'string', required: true, minLength: 2 },
-  inStock: { type: 'boolean', required: true },
+  inStock: { type: 'boolean', required: true, uuid },
 });
 const validateProduct = (req, res, next) => {
   const productData = req.body;

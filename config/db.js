@@ -1,10 +1,10 @@
 // connect dtabase
 const mongoose = require('mongoose');
 require('dotenv').config(); 
-const dbURI = process.env.MONGODBATLAS_URI;
+// const dbURI = process.env.MONGODBATLAS_URI;
         const connectDB = async () => {
             try {
-                await mongoose.connect(dbURI, { 
+                await mongoose.connect(process.env.MONGODBATLAS_URI, { 
                     useNewUrlParser: true,
                     useUnifiedTopology: true 
                 });

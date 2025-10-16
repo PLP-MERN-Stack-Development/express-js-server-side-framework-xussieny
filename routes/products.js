@@ -6,9 +6,6 @@ const { NotFoundError, ValidationError, BadRequestError } = require('../errors')
 const { authenticate, validateProduct } = require('../middleware/index'); // Import specific middleware
 
 const router = express.Router();
-
-// Sample in-memory products database (as provided in starter code)
-// In a real application, this would interact with a persistent database.
 let products = [
   {
     id: '1',
@@ -102,16 +99,14 @@ let products = [
 },
 ];
 
-// --- Apply Middleware to specific routes ---
-// Apply authentication to all product routes
 router.use(authenticate);
 
-// --- RESTful API Routes ---
 
-// GET /api/products: List all products (Task 2, Task 5: Filtering, Pagination, Search)
+
+// GET /api/products: List all products 
 router.get('/', async (req, res, next) => {
   try {
-    let filteredAndSearchedProducts = [...products]; // Start with a copy of all products
+    let filteredAndSearchedProducts = [...products]; 
 
     // Task 5: Filtering by category
     const { category, search, limit, page } = req.query;
@@ -136,7 +131,7 @@ router.get('/', async (req, res, next) => {
 router.delete('/', async (req, res, next) => {
   try {
     products = [];
-    // 204 No Content for successful deletion
+  
     res.status(204).send();
   } catch (error) {
     next(error);
@@ -175,7 +170,7 @@ router.delete('/', async (req, res, next) => {
 });
 
 
-// POST /api/products: Create a new product (Task 2, Task 3: Validation)
+// POST /api/products: Create a new product
 router.post('/', validateProduct, async (req, res, next) => {
   try {
     const newProductData = req.body;
@@ -290,7 +285,7 @@ router.get('/:id', async (req, res, next) => {
 
         res.status(200).json(formattedStats);
     } catch (error) {
-        next(error); // Pass error to global error handler
+        next(error); 
     }
 });
 
